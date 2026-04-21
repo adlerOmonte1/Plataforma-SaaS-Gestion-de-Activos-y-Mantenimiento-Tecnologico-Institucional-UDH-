@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,13 +33,30 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    #APIs
+    'users_service',
+    'inventory_service',
+    'tickets_service',
+    ######
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # AUTENTICACION 
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google', # <-- El proveedor de Google
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
 ]
+
+SITE_ID=1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # AUTENTICACION GOOGLE 
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'InnovaSolutionMVPGestionActivos.urls'
@@ -115,3 +136,31 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Configuración del adaptador personalizado para Google OAuth
+SOCIALACCOUNT_ADAPTER = 'users_service.adapters.CustomSocialAccountAdapter'
+
+# 1. Le decimos a allauth que confíe en la configuración de este archivo
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # Conectamos las credenciales de tu compañero aquí
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_OAUTH2_CLIENT_ID'),
+            'secret': os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET'),
+            'key': ''
+        },
+        # Qué datos le vamos a pedir a Google
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+# 2. Obligamos al sistema a usar la sesión de email 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = False
