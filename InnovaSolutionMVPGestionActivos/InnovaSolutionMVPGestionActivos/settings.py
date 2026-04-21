@@ -57,6 +57,8 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID=1
+#USUARIO PERSONALIZADO
+AUTH_USER_MODEL = 'users_service.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
