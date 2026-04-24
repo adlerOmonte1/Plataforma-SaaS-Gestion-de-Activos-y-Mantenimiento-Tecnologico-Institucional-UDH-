@@ -186,17 +186,12 @@ REST_USE_JWT = True
 
 # 2. Parametrizar el ciclo de vida del token
 SIMPLE_JWT = {
-    # REGLA DE ORO: El token de acceso dura exactamente 8 horas
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
     
-    # El token de refresco dura un poco más (ej. 1 día) para permitir renovar
-    # la sesión sin pedirle de nuevo el login de Google al usuario
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     
-    # Seguridad adicional: cada vez que se usa el refresh token, se genera uno nuevo
     'ROTATE_REFRESH_TOKENS': True,
     
-    # Importante: el token viejo se invalida inmediatamente al rotar
     'BLACKLIST_AFTER_ROTATION': True,
 
     'ALGORITHM': 'HS256',
@@ -206,13 +201,12 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
-# 3. Definir JWT como clase de autenticación por defecto en DRF
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     )
 }
-# 2. Obligamos al sistema a usar la sesión de email 
+
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
