@@ -10,7 +10,6 @@ class Area(models.Model):
         return self.nombre_area
 
 class User(AbstractUser):
-    # Regla: Roles Fijos e Inmutables
     class Roles(models.TextChoices):
         ADMIN = 'JEFE_TI', 'Jefe TI (Administrador)'
         SUPERVISOR = 'SUPERVISOR', 'Supervisor'
