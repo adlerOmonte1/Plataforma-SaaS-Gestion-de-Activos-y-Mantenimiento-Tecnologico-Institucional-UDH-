@@ -46,9 +46,8 @@ INSTALLED_APPS = [
     ######
     # CORS y herramientas
     'corsheaders',
-    'rest_framework',
     'rest_framework.authtoken',
-    'django.contrib.sites',
+    
     
     # Core Django
     'django.contrib.admin',
@@ -59,7 +58,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # AUTENTICACION 
     'rest_framework',
-    'rest_framework.authtoken',
     'django.contrib.sites',
     
     # Autenticación y Allauth
@@ -67,7 +65,6 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google', # <-- El proveedor de Google
-    'allauth.socialaccount.providers.google',
     'dj_rest_auth',
     'dj_rest_auth.registration',
 ]
@@ -181,7 +178,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 # ==========================================
-# CONFIGURACIÓN DE JWT (TASK 20)
+# CONFIGURACIÓN DE JWT 
 # ==========================================
 
 # 1. Habilitar JWT para dj-rest-auth
@@ -190,7 +187,7 @@ REST_USE_JWT = True
 # 2. Parametrizar el ciclo de vida del token
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), # Opcional: Recomendado para mantener la sesión al día siguiente
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), 
 }
 
 # 3. Definir JWT como clase de autenticación por defecto en DRF
