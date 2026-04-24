@@ -16,8 +16,11 @@ from dotenv import load_dotenv
 from datetime import timedelta
 
 load_dotenv()
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,6 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-0c@$vqz22g@07$hq4hoa_gn+k@nbu&7qxmkw*ydfb32z)q22&#'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-0c@$vqz22g@07$hq4hoa_gn+k@nbu&7qxmkw*ydfb32z)q22&#')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +44,13 @@ INSTALLED_APPS = [
     'inventory_service',
     'tickets_service',
     ######
+    # CORS y herramientas
+    'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django.contrib.sites',
+    
+    # Core Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,19 +61,23 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.sites',
+    
+    # Autenticación y Allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google', # <-- El proveedor de Google
+    'allauth.socialaccount.providers.google',
     'dj_rest_auth',
     'dj_rest_auth.registration',
 ]
 
-SITE_ID=1
-#USUARIO PERSONALIZADO
+SITE_ID= 1
+# USUARIO PERSONALIZADO (Módulo A)
 AUTH_USER_MODEL = 'users_service.User'
 
 MIDDLEWARE = [
+   'corsheaders.middleware.CorsMiddleware',  # Debe ir lo más arriba posible
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -107,50 +122,52 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'es-co' # Cambiado a español
+TIME_ZONE = 'America/Bogota' # Configurado para tu zona horaria
 USE_I18N = True
 
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-
+# Static files
 STATIC_URL = 'static/'
 
-# Configuración del adaptador personalizado para Google OAuth
-SOCIALACCOUNT_ADAPTER = 'users_service.adapters.CustomSocialAccountAdapter'
 
+# --- CONFIGURACIÓN DE SEGURIDAD Y JWT ---
+
+# Variable que usamos en views.py para validar el token de Google
+GOOGLE_OAUTH2_CLIENT_ID = os.getenv('GOOGLE_OAUTH2_CLIENT_ID')
+
+# Configuración de CORS para permitir a React
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
+
+# Soluciona problemas de popups con Google Auth
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
+
+# --- CONFIGURACIÓN DE ALLAUTH / GOOGLE ---
+
+SOCIALACCOUNT_ADAPTER = 'users_service.adapters.CustomSocialAccountAdapter'
 # 1. Le decimos a allauth que confíe en la configuración de este archivo
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         # Conectamos las credenciales de tu compañero aquí
         'APP': {
-            'client_id': os.environ.get('GOOGLE_OAUTH2_CLIENT_ID'),
-            'secret': os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET'),
+            'client_id': os.getenv('GOOGLE_OAUTH2_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_OAUTH2_CLIENT_SECRET'),
             'key': ''
         },
         # Qué datos le vamos a pedir a Google
@@ -182,8 +199,9 @@ REST_FRAMEWORK = {
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     )
 }
-
 # 2. Obligamos al sistema a usar la sesión de email 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
