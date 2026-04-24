@@ -7,6 +7,7 @@ import Login from './components/Auth/Login';
 // 👇 1. Importamos tus nuevos componentes
 import Dashboard from './pages/Dashboard/Dashboard';
 import ProtectedRoute from './routes/ProtectedRoute';
+import SessionExpiredModal from './components/Modals/SessionExpiredModal';
 
 function App() {
   // Usamos el nombre exacto con el prefijo
@@ -15,6 +16,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Router>
+        <SessionExpiredModal /> {/* Componente para mostrar la alerta de sesión expirada */}
         <Routes>
           {/* --- RUTA PÚBLICA --- */}
           <Route path="/" element={<Login />} />
