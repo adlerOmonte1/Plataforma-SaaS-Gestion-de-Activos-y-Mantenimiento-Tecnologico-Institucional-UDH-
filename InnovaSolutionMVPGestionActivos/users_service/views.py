@@ -6,11 +6,9 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
-
-# IMPORTANTE: Asegúrate de importar tu modelo de Usuario correcto. 
-# Si usas el modelo por defecto de Django, sería: from django.contrib.auth.models import User
-# Si creaste uno personalizado, impórtalo aquí.
 from django.contrib.auth import get_user_model
+
+# Importamos tu modelo de Usuario personalizado
 User = get_user_model()
 
 class GoogleLoginView(APIView):
@@ -18,17 +16,21 @@ class GoogleLoginView(APIView):
     permission_classes = [] 
 
     def post(self, request):
+        
+        # Buscamos la llave 'token' en lo que nos mandó React
         token_google = request.data.get('token')
         
         if not token_google:
             return Response({"error": "Token no proporcionado"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+
             # 1. Django se comunica con Google para verificar que el token no sea falso
             idinfo = id_token.verify_oauth2_token(
                 token_google, 
                 requests.Request(), 
-                settings.GOOGLE_OAUTH2_CLIENT_ID # Tu ID de Google que pondremos en settings
+                settings.GOOGLE_OAUTH2_CLIENT_ID,
+                clock_skew_in_seconds=10
             )
 
             email_usuario = idinfo['email']
@@ -51,11 +53,10 @@ class GoogleLoginView(APIView):
                     status=status.HTTP_403_FORBIDDEN
                 )
 
-            # Si pasa las dos reglas, generamos nuestro propio JWT de 8 horas
+            # Si pasa las dos reglas, generamos nuestro propio JWT 
             refresh = RefreshToken.for_user(usuario)
             
-            # Extraemos el rol del usuario (Ajusta 'rol' al nombre real del campo en tu modelo de BD)
-            # Si aún no tienes un campo de rol, puedes poner un string temporal como 'TECNICO'
+            # Extraemos el rol del usuario (Si no tiene, le ponemos SOLICITANTE por defecto)
             rol_usuario = getattr(usuario, 'rol', 'SOLICITANTE')
 
             # Le respondemos al frontend de React lo que está esperando
@@ -65,6 +66,6 @@ class GoogleLoginView(APIView):
                 'role': rol_usuario
             }, status=status.HTTP_200_OK)
 
-        except ValueError:
-            # Si el token de Google expiró o fue manipulado
+        except ValueError as e:
+            print("error", str(e))
             return Response({"error": "Token de Google inválido o expirado"}, status=status.HTTP_400_BAD_REQUEST)
