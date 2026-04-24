@@ -12,6 +12,10 @@ from django.contrib.auth import get_user_model
 from rest_framework.permissions import BasePermission
 from .serializers import RegistroUsuarioSerializer
 
+from rest_framework import viewsets
+from .serializers import AreaSerializer
+from .models import Area
+
 User = get_user_model()
 
 # =========================================================
@@ -85,3 +89,17 @@ class RegistrarUsuarioView(APIView):
             return Response({"mensaje": "Usuario institucional registrado con éxito."}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# =========================================================
+# 3. VISTA PARA GESTIÓN DE ÁREAS (CRUD BÁSICO)
+# =========================================================
+class AreaViewSet(viewsets.ModelViewSet):
+    queryset = Area.objects.all().order_by('codigo')
+    serializer_class = AreaSerializer
+    permission_classes = [EsJefeTI] 
+
+    def destroy(self, request, *args, **kwargs):
+        area = self.get_object()
+        area.is_active = False 
+        area.save()
+        return Response({"mensaje": "El área ha sido inactivada exitosamente."}, status=status.HTTP_200_OK)

@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 
 // 👇 IMPORTANTE: Asegúrate de que esta ruta coincida con donde guardaste tu formulario
 import FormularioRegistro from '../../components/Admin/FormularioRegistro'; 
+import GestionAreas from '../../components/Admin/GestionAreas';
+
+
 
 // --- SUB-COMPONENTES ---
 const ResumenAdmin = () => <h2>Panel de Administrador (Jefe TI)</h2>;
 const SupervisorDashboard = () => <h2>Panel de Supervisor</h2>;
 const TecnicoDashboard = () => <h2>Panel de Técnico</h2>;
 const SolicitanteDashboard = () => <h2>Panel de Solicitante</h2>;
+
 
 const Dashboard = () => {
   const [userRole, setUserRole] = useState(null);
@@ -56,6 +60,14 @@ const Dashboard = () => {
                 Registrar Personal
               </button>
             </li>
+            <li style={styles.menuItem}>
+              <button 
+                onClick={() => setVistaActiva('areas')} 
+                style={vistaActiva === 'areas' ? styles.menuBtnActive : styles.menuBtn}
+              >
+                Gestión de Áreas
+              </button>
+            </li>
           </ul>
         </aside>
 
@@ -76,6 +88,7 @@ const Dashboard = () => {
           <div style={{ padding: '40px' }}>
             {vistaActiva === 'inicio' && <ResumenAdmin />}
             {vistaActiva === 'registrar' && <FormularioRegistro />}
+            {vistaActiva === 'areas' && <GestionAreas />}
           </div>
         </main>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 
 const FormularioRegistro = () => {
@@ -14,11 +14,24 @@ const FormularioRegistro = () => {
     const [mensaje, setMensaje] = useState({ texto: '', tipo: '' });
 
     // Mockup de áreas
-    const areasDisponibles = [
-        { id: 1, nombre: 'Soporte Técnico' },
-        { id: 2, nombre: 'Redes y Telecomunicaciones' },
-        { id: 3, nombre: 'Desarrollo de Software' }
-    ];
+    const [areasDisponibles, setAreasDisponibles] = useState([]);
+
+
+    useEffect(() => {
+        const fetchAreas = async () => {
+            try {
+                const response = await api.get('/users/areas/');
+                // Filtramos para que en el select solo aparezcan las áreas activas
+                const areasActivas = response.data.filter(area => area.is_active === true);
+                setAreasDisponibles(areasActivas);
+            } catch (error) {
+                console.error("Error al cargar las áreas:", error);
+                setMensaje({ texto: 'Advertencia: No se pudieron cargar las áreas.', tipo: 'error' });
+            }
+        };
+
+        fetchAreas();
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -124,8 +137,9 @@ const FormularioRegistro = () => {
                         <label style={labelStyle}>Área Asignada *</label>
                         <select name="area_asignada" value={formData.area_asignada} onChange={handleChange} required style={inputStyle}>
                             <option value="" disabled>Seleccione un área</option>
+                            {/* 👇 3. Renderizamos las áreas que trajimos de la BD usando area.nombre_area */}
                             {areasDisponibles.map(area => (
-                                <option key={area.id} value={area.id}>{area.nombre}</option>
+                                <option key={area.id} value={area.id}>{area.nombre_area} ({area.codigo})</option>
                             ))}
                         </select>
                     </div>

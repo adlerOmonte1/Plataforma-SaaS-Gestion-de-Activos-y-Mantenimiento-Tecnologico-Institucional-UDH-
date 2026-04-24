@@ -1,8 +1,14 @@
 import re
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from .models import Area
 
 User = get_user_model()
+
+class AreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Area
+        fields = '__all__'
 
 class RegistroUsuarioSerializer(serializers.ModelSerializer):
     nombres = serializers.CharField(source='first_name')

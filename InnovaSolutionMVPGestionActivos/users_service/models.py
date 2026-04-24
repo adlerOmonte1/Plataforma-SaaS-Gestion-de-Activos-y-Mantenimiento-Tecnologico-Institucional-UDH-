@@ -2,12 +2,16 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Area(models.Model):
-    nombre_area = models.CharField(max_length=100, unique=True) # Regla: Unicidad
-    is_active = models.BooleanField(default=True) # Regla: Inactivación Segura (Borrado Lógico)
+    codigo = models.CharField(max_length=20, unique=True, null=True) # Ej: RRHH-01
+    nombre_area = models.CharField(max_length=100, unique=True)
+    descripcion = models.TextField(blank=True, null=True)
+    sede_bloque = models.CharField(max_length=100, null=True) # Ej: Sede Central
+    
+    is_active = models.BooleanField(default=True) # Para el borrado lógico
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.nombre_area
+        return f"{self.codigo} - {self.nombre_area}"
 
 class User(AbstractUser):
     class Roles(models.TextChoices):

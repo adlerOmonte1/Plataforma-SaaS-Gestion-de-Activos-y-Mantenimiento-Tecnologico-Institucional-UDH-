@@ -1,9 +1,14 @@
-# users_service/urls.py
-from django.urls import path
-from .views import GoogleLoginView, RegistrarUsuarioView # <-- Asegúrate de importar la nueva vista
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import GoogleLoginView, RegistrarUsuarioView, AreaViewSet
+
+# Configuramos el router para las áreas
+router = DefaultRouter()
+router.register(r'areas', AreaViewSet)
 
 urlpatterns = [
     path('auth/google/', GoogleLoginView.as_view(), name='google_login'),
-    # 👇 ESTA ES LA RUTA NUEVA 👇
-    path('registrar/', RegistrarUsuarioView.as_view(), name='registrar_usuario'), 
+    path('registrar/', RegistrarUsuarioView.as_view(), name='registrar_usuario'),
+    # Incluimos las rutas automáticas del ViewSet
+    path('', include(router.urls)), 
 ]
