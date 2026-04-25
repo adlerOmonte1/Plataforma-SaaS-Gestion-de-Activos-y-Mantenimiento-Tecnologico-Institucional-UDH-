@@ -6,7 +6,7 @@ const FormularioRegistro = () => {
         email: '',
         nombres: '',
         apellidos: '',
-        rol: '', // Vacío por defecto para forzar la selección
+        rol: '', 
         area_asignada: ''
     };
 
@@ -47,14 +47,13 @@ const FormularioRegistro = () => {
         setMensaje({ texto: 'Procesando...', tipo: 'info' });
 
         try {
-            // 👇 NUEVA LÓGICA: Limpiamos los datos antes de enviarlos a Django
+
             const datosAEnviar = { ...formData };
             
             if (datosAEnviar.rol !== 'SUPERVISOR') {
-                datosAEnviar.area_asignada = null; // Borramos el área si no es supervisor
+                datosAEnviar.area_asignada = null; 
             }
 
-            // Usamos 'datosAEnviar' en lugar de 'formData'
             const response = await api.post('/users/registrar/', datosAEnviar);
             
             setMensaje({ texto: response.data.mensaje || 'Usuario registrado correctamente.', tipo: 'exito' });
