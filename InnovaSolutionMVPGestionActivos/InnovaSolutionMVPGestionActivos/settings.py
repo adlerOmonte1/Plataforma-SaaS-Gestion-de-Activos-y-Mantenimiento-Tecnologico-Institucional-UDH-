@@ -180,6 +180,7 @@ SOCIALACCOUNT_PROVIDERS = {
 # ==========================================
 # CONFIGURACIÓN DE JWT 
 # ==========================================
+<<<<<<< HEAD
 
 # 1. Habilitar JWT para dj-rest-auth
 REST_USE_JWT = True
@@ -206,7 +207,25 @@ REST_FRAMEWORK = {
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     )
 }
+=======
+>>>>>>> ffe25b76a2a62bc5f49a7dd3bb380b40482608f8
 
+# 1. Habilitar JWT para dj-rest-auth
+REST_USE_JWT = True
+
+# 2. Parametrizar el ciclo de vida del token
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), 
+}
+
+# 3. Definir JWT como clase de autenticación por defecto en DRF
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    )
+}
+# 2. Obligamos al sistema a usar la sesión de email 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
