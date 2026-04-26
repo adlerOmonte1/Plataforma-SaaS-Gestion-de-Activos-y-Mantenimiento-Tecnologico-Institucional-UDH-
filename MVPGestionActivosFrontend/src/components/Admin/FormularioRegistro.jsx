@@ -74,7 +74,7 @@ const FormularioRegistro = () => {
     return (
         <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '8px', border: '1px solid #e2e8f0', maxWidth: '600px' }}>
             <h2 style={{ marginTop: 0, color: '#1f2937', fontSize: '20px', marginBottom: '20px' }}>
-                Registro de Nuevo Usuario
+                Registro de Nuevo Personal
             </h2>
             
             {mensaje.texto && (
