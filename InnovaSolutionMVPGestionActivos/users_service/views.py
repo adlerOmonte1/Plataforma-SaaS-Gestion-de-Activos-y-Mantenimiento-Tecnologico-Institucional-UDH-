@@ -49,10 +49,28 @@ class GoogleLoginView(APIView):
             try:
                 usuario = User.objects.get(email=email_usuario)
             except User.DoesNotExist:
-                return Response(
-                    {"error": "Su cuenta no ha sido dada de alta por el Administrador."},
-                    status=status.HTTP_403_FORBIDDEN
+                # --- INICIO DEL AUTO-REGISTRO ---
+                
+                # Extraemos lo que está antes del @ para usarlo como username
+                base_username = email_usuario.split('@')[0]
+                username = base_username
+                
+                # Por seguridad, si el username ya existe, le agregamos un número
+                counter = 1
+                while User.objects.filter(username=username).exists():
+                    username = f"{base_username}{counter}"
+                    counter += 1
+                
+                # Lo guardamos en la base de datos solo con el username, correo y rol SOLICITANTE
+                # (first_name y last_name quedan vacíos automáticamente)
+                usuario = User(
+                    username=username,
+                    email=email_usuario,
+                    rol='SOLICITANTE' 
                 )
+                
+                usuario.set_unusable_password() # Bloqueamos login con contraseña
+                usuario.save()
 
             refresh = RefreshToken.for_user(usuario)
             rol_usuario = getattr(usuario, 'rol', 'SOLICITANTE')
