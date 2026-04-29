@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 
-// 👇 1. Importa tu imagen aquí. Ajusta la ruta según tu proyecto
 import logoImg from '../assets/udh_logo.png'; 
 
 const Login = () => {

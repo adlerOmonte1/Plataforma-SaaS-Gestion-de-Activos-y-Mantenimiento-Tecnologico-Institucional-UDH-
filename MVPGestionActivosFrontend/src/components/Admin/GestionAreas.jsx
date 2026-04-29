@@ -10,7 +10,6 @@ const GestionAreas = () => {
     const [formData, setFormData] = useState(formularioVacio);
     const [idEdicion, setIdEdicion] = useState(null);
 
-    // Cargar áreas al inicio
     useEffect(() => {
         cargarAreas();
     }, []);
@@ -159,9 +158,11 @@ const GestionAreas = () => {
                             <button type="submit" style={styles.btnDark}>
                                 {vistaActual === 'crear' ? 'Guardar Área' : 'Actualizar Área'}
                             </button>
+                        
                             <button type="button" onClick={() => setVistaActual('lista')} style={styles.btnCancel}>
                                 Cancelar
                             </button>
+                
                         </div>
                     </form>
                 </div>
