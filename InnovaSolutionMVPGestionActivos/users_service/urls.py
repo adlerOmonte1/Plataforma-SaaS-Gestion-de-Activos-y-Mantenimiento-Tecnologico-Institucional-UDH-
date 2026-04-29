@@ -2,7 +2,6 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import GoogleLoginView, RegistrarUsuarioView, AreaViewSet
 
-# Configuramos el router para las áreas
 router = DefaultRouter()
 router.register(r'areas', AreaViewSet)
 
