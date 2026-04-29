@@ -4,9 +4,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 
+// 👇 1. Importa tu imagen aquí. Ajusta la ruta según tu proyecto
+import logoImg from '../assets/udh_logo.png'; 
+
 const Login = () => {
     const [errorMessage, setErrorMessage] = useState('');
-    // 👇 1. Volvemos a incluir el estado para controlar la ventana
     const [showModal, setShowModal] = useState(false); 
     const navigate = useNavigate();
 
@@ -45,8 +47,18 @@ const Login = () => {
     return (
         <div style={styles.container}>
             <div style={styles.card}>
-                <h2 style={styles.title}>Gestión de Activos TI</h2>
-                <p style={styles.subtitle}>Acceso exclusivo para personal autorizado</p>
+                
+                {/* 👇 2. Recuadro del logo ahora contiene una imagen */}
+                <div style={styles.logoBox}>
+                    <img 
+                        src={logoImg} 
+                        alt="Logotipo Institucional" 
+                        style={styles.logoImage} 
+                    />
+                </div>
+
+                <h2 style={styles.title}>Bienvenido al Sistema de Gestión<br/>de Activos</h2>
+                <p style={styles.subtitle}>Acceso exclusivo con cuenta institucional Google Workspace</p>
                 
                 {errorMessage && (
                     <div style={styles.errorBox}>
@@ -61,12 +73,11 @@ const Login = () => {
                         useOneTap={false}
                         text="signin_with"
                         shape="rectangular"
-                        theme="outline"
+                        theme="filled_black"
                     />
                 </div>
 
-                {/* 👇 2. Enlace de "Olvidé mi contraseña" subrayado */}
-                <div style={{ marginTop: '25px' }}>
+                <div style={{ marginTop: '30px' }}>
                     <span 
                         style={styles.forgotPasswordLink} 
                         onClick={() => setShowModal(true)}
@@ -76,11 +87,9 @@ const Login = () => {
                 </div>
             </div>
 
-            {/* 👇 3. VENTANA EMERGENTE (MODAL) BASADO EN TU CAPTURA */}
             {showModal && (
                 <div style={styles.modalOverlay}>
                     <div style={styles.modalContent}>
-                        {/* Icono de escudo */}
                         <div style={{ fontSize: '45px', marginBottom: '15px' }}>🛡️</div> 
                         
                         <h2 style={{ margin: '0 0 15px 0', color: '#0f172a', fontSize: '22px' }}>
@@ -116,23 +125,28 @@ const Login = () => {
     );
 };
 
-// --- ESTILOS ---
+// --- ESTILOS ACTUALIZADOS ---
 const styles = {
-    container: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f4f7f6', fontFamily: 'sans-serif' },
-    card: { backgroundColor: '#ffffff', padding: '40px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', width: '100%', maxWidth: '380px', textAlign: 'center' },
-    title: { margin: '0 0 10px 0', color: '#333' },
-    subtitle: { color: '#666', marginBottom: '30px', fontSize: '14px' },
-    errorBox: { backgroundColor: '#fee2e2', color: '#dc2626', padding: '15px', borderRadius: '4px', marginBottom: '20px', fontSize: '14px', border: '1px solid #f87171' },
-    buttonContainer: { display: 'flex', justifyContent: 'center', marginTop: '10px' },
+    container: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#fafafa', fontFamily: 'sans-serif' },
+    card: { backgroundColor: '#ffffff', padding: '50px 40px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)', width: '450px', textAlign: 'center' }, 
     
-    // Estilo para el texto subrayado
-    forgotPasswordLink: { color: '#4b5563', fontSize: '13px', textDecoration: 'underline', cursor: 'pointer', transition: 'color 0.2s' },
+    // Contenedor del logo (mantiene el recuadro oscuro)
+    logoBox: { width: '110px', height: '110px', borderRadius: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '0 auto 30px auto', overflow: 'hidden', padding: '10px', boxSizing: 'border-box' },
+    
+    // 👇 3. Estilo para la imagen del logo
+    logoImage: {
+        maxWidth: '100%',
+        maxHeight: '100%',
+        objectFit: 'contain', // Asegura que la imagen no se deforme
+    },
 
-    // Estilos del Modal
+    title: { margin: '0 0 15px 0', color: '#111827', fontSize: '24px', fontWeight: '600', lineHeight: '1.3' },
+    subtitle: { color: '#6b7280', marginBottom: '35px', fontSize: '14px' },
+    errorBox: { backgroundColor: '#fee2e2', color: '#dc2626', padding: '15px', borderRadius: '4px', marginBottom: '25px', fontSize: '14px', border: '1px solid #f87171' },
+    buttonContainer: { display: 'flex', justifyContent: 'center', marginTop: '10px', transform: 'scale(1.05)' },
+    forgotPasswordLink: { color: '#6b7280', fontSize: '13px', textDecoration: 'underline', cursor: 'pointer', transition: 'color 0.2s' },
     modalOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.4)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 },
-    modalContent: { backgroundColor: 'white', padding: '40px 30px', borderRadius: '12px', width: '90%', maxWidth: '350px', textAlign: 'center', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' },
-    
-    // Botones del modal
+    modalContent: { backgroundColor: 'white', padding: '40px 30px', borderRadius: '12px', width: '350px', textAlign: 'center', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' },
     btnDark: { backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', width: '100%' },
     btnOutline: { backgroundColor: 'white', color: '#0f172a', border: '1px solid #e5e7eb', padding: '12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', width: '100%' }
 };
